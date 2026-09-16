@@ -34,6 +34,19 @@ class Database:
         conn = self._connect()
         try:
             conn.executescript(SCHEMA)
+            # One-time prune. AudioCodex 1.2.1 and earlier materialised a full co-occurrence
+            # clique per episode into entity_relations -- every entity paired with every
+            # other, in both directions. Those relationships are now derived on read
+            # (library.entity_cooccurrence), so the stored rows are dead weight. The settings
+            # marker keeps the DELETE to one run per database instead of every open.
+            if not conn.execute(
+                "SELECT 1 FROM settings WHERE key='pruned_cooccurrence_relations'"
+            ).fetchone():
+                conn.execute("DELETE FROM entity_relations WHERE relation='CO_OCCURS_IN_EPISODE'")
+                conn.execute(
+                    "INSERT OR REPLACE INTO settings(key, value_json) "
+                    "VALUES('pruned_cooccurrence_relations', '1')"
+                )
             conn.commit()
         finally:
             conn.close()

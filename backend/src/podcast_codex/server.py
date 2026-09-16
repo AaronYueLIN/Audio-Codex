@@ -15,6 +15,7 @@ from typing import Any
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import FileResponse, PlainTextResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -24,7 +25,10 @@ from .db import db
 from .importer import import_paths, normalize_existing_in_our_time_titles
 from .media import extract_artwork, image_media_type
 from .jobs import (create_job, submit, update_job, raise_if_cancelled, cancel_job, delete_job, clear_history)
-from .library import list_episodes, episode_detail, list_collections, collection_episodes
+from .library import (
+    list_episodes, episode_detail, list_collections, collection_episodes,
+    entity_cooccurrence, entity_link_graph,
+)
 from .intelligence import answer as intelligence_answer, conversation_messages, delete_conversation
 from .ai import AISettings, ChatProvider, CLIENT_ACTION_TOOLS
 from .mcp import TOOLS as MCP_TOOLS, DEFAULT_CONTEXT_TOKENS, jsonrpc as mcp_jsonrpc
@@ -148,6 +152,78 @@ def _powershell_json(script: str):
     except Exception:
         return []
     return value if isinstance(value, list) else [value]
+
+
+# A common dialog needs a real owner window. Handing it an invisible helper form makes
+# Windows treat the dialog as an orphan, which is why it used to open underneath every
+# other window on the desktop. Resolve a visible foreground window instead, preferring
+# whatever the user is actually looking at.
+#
+# ShowDialog() takes an IWin32Window, not a raw handle, and PowerShell will not coerce
+# IntPtr to that interface on its own -- so the handle is wrapped in a managed shim.
+_FOREGROUND_HELPER = r'''
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type @"
+using System;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+public class AcOwner : IWin32Window {
+  private IntPtr _h;
+  public AcOwner(IntPtr h) { _h = h; }
+  public IntPtr Handle { get { return _h; } }
+}
+public class AcForeground {
+  [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+  [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr h);
+}
+"@ -ReferencedAssemblies System.Windows.Forms
+function Get-AcOwner {
+  $h = [AcForeground]::GetForegroundWindow()
+  if ($h -eq [IntPtr]::Zero -or -not [AcForeground]::IsWindowVisible($h)) {
+    # No claimable foreground window: fall back to an unowned dialog. Both branches must
+    # return an IWin32Window -- returning a bare IntPtr here is what made ShowDialog
+    # throw "Cannot find an overload", and only when the app had no visible window.
+    return (New-Object AcOwner([IntPtr]::Zero))
+  }
+  return (New-Object AcOwner($h))
+}
+'''
+
+
+def _powershell_picker(script: str):
+    """Run a WinForms picker on a worker thread so the request never blocks the server."""
+    return _powershell_json(_FOREGROUND_HELPER + "\n" + script)
+
+
+@app.post("/api/pick-files")
+async def pick_files():
+    script = r'''
+$owner = Get-AcOwner
+$d = New-Object System.Windows.Forms.OpenFileDialog
+$d.Title = 'Import audio'
+$d.Multiselect = $true
+$d.Filter = 'Audio|*.mp3;*.m4a;*.aac;*.flac;*.ogg;*.wav;*.opus;*.mp4|All files|*.*'
+$result = $d.ShowDialog($owner)
+if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
+  @($d.FileNames) | ConvertTo-Json -Compress
+}
+'''
+    return await run_in_threadpool(_powershell_picker, script)
+
+
+@app.post("/api/pick-folder")
+async def pick_folder():
+    script = r'''
+$owner = Get-AcOwner
+$d = New-Object System.Windows.Forms.FolderBrowserDialog
+$d.Description = 'Select podcast folder'
+$d.ShowNewFolderButton = $false
+$result = $d.ShowDialog($owner)
+if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
+  @($d.SelectedPath) | ConvertTo-Json -Compress
+}
+'''
+    return await run_in_threadpool(_powershell_picker, script)
 
 
 @app.get("/", include_in_schema=False)
@@ -296,50 +372,6 @@ async def mcp_endpoint(request: Request):
     return response or {"jsonrpc": "2.0", "result": {}}
 
 
-
-@app.post("/api/pick-files")
-def pick_files():
-    script = r'''
-Add-Type -AssemblyName System.Windows.Forms
-$owner = New-Object System.Windows.Forms.Form
-$owner.TopMost = $true
-$owner.ShowInTaskbar = $false
-$owner.Opacity = 0
-$owner.Show()
-$d = New-Object System.Windows.Forms.OpenFileDialog
-$d.Title = 'Import audio'
-$d.Multiselect = $true
-$d.Filter = 'Audio|*.mp3;*.m4a;*.aac;*.flac;*.ogg;*.wav;*.opus;*.mp4|All files|*.*'
-$result = $d.ShowDialog($owner)
-$owner.Close()
-if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
-  @($d.FileNames) | ConvertTo-Json -Compress
-}
-'''
-    return _powershell_json(script)
-
-
-@app.post("/api/pick-folder")
-def pick_folder():
-    script = r'''
-Add-Type -AssemblyName System.Windows.Forms
-$owner = New-Object System.Windows.Forms.Form
-$owner.TopMost = $true
-$owner.ShowInTaskbar = $false
-$owner.Opacity = 0
-$owner.Show()
-$d = New-Object System.Windows.Forms.FolderBrowserDialog
-$d.Description = 'Select podcast folder'
-$d.ShowNewFolderButton = $false
-$result = $d.ShowDialog($owner)
-$owner.Close()
-if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
-  @($d.SelectedPath) | ConvertTo-Json -Compress
-}
-'''
-    return _powershell_json(script)
-
-
 @app.get("/api/health")
 def health():
     return {"ok": True, "version": "1.2.1", "home": str(PATHS.home),
@@ -365,13 +397,29 @@ def overview():
 
 @app.post("/api/import")
 def import_audio(req: ImportRequest):
-    result = import_paths(db, req.paths, req.podcast_title)
-    for episode_id in result.get("new_episode_ids") or []:
-        try:
-            evaluate_watches_for_episode(db, int(episode_id))
-        except Exception:
-            pass
-    return result
+    if not req.paths:
+        return {"imported": 0, "skipped": 0, "episode_ids": [], "new_episode_ids": []}
+
+    job_id = create_job("import")
+
+    def work():
+        update_job(job_id, progress=.05, message="Scanning selected audio…")
+        result = import_paths(db, req.paths, req.podcast_title)
+        imported = int(result.get("imported") or 0)
+        skipped = int(result.get("skipped") or 0)
+        update_job(
+            job_id,
+            progress=.9,
+            message=f"Imported {imported} item(s); skipped {skipped} existing item(s)",
+        )
+        for episode_id in result.get("new_episode_ids") or []:
+            try:
+                evaluate_watches_for_episode(db, int(episode_id))
+            except Exception:
+                pass
+
+    submit(job_id, work)
+    return {"job_id": job_id}
 
 
 @app.get("/api/podcasts")
@@ -597,12 +645,7 @@ def entity(entity_id: int):
            LIMIT 300""",
         (entity_id,),
     )
-    row["relations"] = db.all(
-        """SELECT r.relation, e.id, e.type, e.canonical_name
-           FROM entity_relations r JOIN entities e ON e.id=r.target_entity_id
-           WHERE r.source_entity_id=? ORDER BY r.relation, e.canonical_name""",
-        (entity_id,),
-    )
+    row["relations"] = entity_cooccurrence(db, entity_id)
     row["notes"] = db.all(
         "SELECT * FROM notes WHERE entity_id=? ORDER BY created_at DESC", (entity_id,)
     )
@@ -1130,19 +1173,7 @@ def graph(limit: int = 80):
     ids = [n["id"] for n in nodes]
     if not ids:
         return {"nodes": [], "links": []}
-    placeholders = ",".join("?" for _ in ids)
-    links = db.all(
-        f"""SELECT source_entity_id AS source, target_entity_id AS target,
-                   relation, confidence
-            FROM entity_relations
-            WHERE source_entity_id IN ({placeholders})
-              AND target_entity_id IN ({placeholders})
-              AND source_entity_id < target_entity_id
-            ORDER BY confidence DESC
-            LIMIT 500""",
-        [*ids, *ids],
-    )
-    return {"nodes": nodes, "links": links}
+    return {"nodes": nodes, "links": entity_link_graph(db, ids)}
 
 
 @app.get("/api/timeline")

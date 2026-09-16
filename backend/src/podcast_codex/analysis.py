@@ -224,6 +224,12 @@ def analyze_episode(db: Database, episode_id: int, generate_embeddings: bool = T
                 item["start_ms"] = min(item["start_ms"], duration)
                 item["end_ms"] = min(max(item["start_ms"], item["end_ms"]), duration)
 
+        clean_entities = entities if isinstance(entities, list) else []
+        if progress:
+            # Emitted outside the write transaction on purpose: the job updater commits on
+            # the shared connection, which would end the transaction early (see Database.tx).
+            progress(0.68, f"Index · up to {len(clean_entities[:100])} entities")
+
         with db.tx() as conn:
             conn.execute(
                 "UPDATE episodes SET summary=?, discipline=? WHERE id=?",
@@ -241,70 +247,61 @@ def analyze_episode(db: Database, episode_id: int, generate_embeddings: bool = T
                 (episode_id,),
             )
 
-        clean_entities = entities if isinstance(entities, list) else []
-        for idx, item in enumerate(clean_entities[:100]):
-            if not isinstance(item, dict):
-                continue
-            typ = str(item.get("type") or "TOPIC").upper()
-            name = str(item.get("name") or "").strip()
-            if typ not in ENTITY_TYPES or len(name) < 2:
-                continue
-            normalized = re.sub(r"\s+", " ", name.casefold()).strip()
-            entity = db.one(
-                "SELECT * FROM entities WHERE type=? AND normalized_key=?",
-                (typ, normalized),
-            )
-            description = str(item.get("description") or "")[:4000]
-            if entity:
-                entity_id = entity["id"]
-                if not entity.get("user_description") and description:
-                    db.execute("UPDATE entities SET description=? WHERE id=?", (description, entity_id))
-            else:
-                entity_id = db.execute(
-                    """INSERT INTO entities(type, canonical_name, normalized_key, description)
-                       VALUES(?, ?, ?, ?)""",
-                    (typ, name, normalized, description),
+            for item in clean_entities[:100]:
+                if not isinstance(item, dict):
+                    continue
+                typ = str(item.get("type") or "TOPIC").upper()
+                name = str(item.get("name") or "").strip()
+                if typ not in ENTITY_TYPES or len(name) < 2:
+                    continue
+                normalized = re.sub(r"\s+", " ", name.casefold()).strip()
+                # Reads share this connection, so an entity written earlier in this same
+                # transaction is already visible to the next lookup.
+                entity = db.one(
+                    "SELECT * FROM entities WHERE type=? AND normalized_key=?",
+                    (typ, normalized),
                 )
-            try:
-                confidence = max(0.0, min(1.0, float(item.get("confidence", 0.7))))
-            except Exception:
-                confidence = 0.7
-            mentions = _find_mentions(rows, name)
-            if mentions:
-                for segment_id in mentions[:80]:
-                    db.execute(
+                description = str(item.get("description") or "")[:4000]
+                if entity:
+                    entity_id = entity["id"]
+                    if not entity.get("user_description") and description:
+                        conn.execute("UPDATE entities SET description=? WHERE id=?", (description, entity_id))
+                else:
+                    entity_id = conn.execute(
+                        """INSERT INTO entities(type, canonical_name, normalized_key, description)
+                           VALUES(?, ?, ?, ?)""",
+                        (typ, name, normalized, description),
+                    ).lastrowid
+                try:
+                    confidence = max(0.0, min(1.0, float(item.get("confidence", 0.7))))
+                except Exception:
+                    confidence = 0.7
+                mentions = _find_mentions(rows, name)
+                if mentions:
+                    for segment_id in mentions[:80]:
+                        conn.execute(
+                            """INSERT OR IGNORE INTO episode_entities(
+                               episode_id, entity_id, segment_id, confidence, user_confirmed
+                            ) VALUES(?, ?, ?, ?, 0)""",
+                            (episode_id, entity_id, segment_id, confidence),
+                        )
+                else:
+                    conn.execute(
                         """INSERT OR IGNORE INTO episode_entities(
                            episode_id, entity_id, segment_id, confidence, user_confirmed
-                        ) VALUES(?, ?, ?, ?, 0)""",
-                        (episode_id, entity_id, segment_id, confidence),
+                        ) VALUES(?, ?, NULL, ?, 0)""",
+                        (episode_id, entity_id, confidence),
                     )
-            else:
-                db.execute(
-                    """INSERT OR IGNORE INTO episode_entities(
-                       episode_id, entity_id, segment_id, confidence, user_confirmed
-                    ) VALUES(?, ?, NULL, ?, 0)""",
-                    (episode_id, entity_id, confidence),
-                )
-            if progress:
-                progress(0.68 + 0.13 * ((idx + 1) / max(1, len(clean_entities))), f"Index · entity · {name}")
 
-        entity_ids = [
-            row["entity_id"]
-            for row in db.all(
-                "SELECT DISTINCT entity_id FROM episode_entities WHERE episode_id=?",
-                (episode_id,),
-            )
-        ]
-        for source in entity_ids:
-            for target in entity_ids:
-                if source == target:
-                    continue
-                db.execute(
-                    """INSERT OR IGNORE INTO entity_relations(
-                       source_entity_id, target_entity_id, relation, confidence
-                    ) VALUES(?, ?, 'CO_OCCURS_IN_EPISODE', 0.25)""",
-                    (source, target),
-                )
+            # Co-occurrence is deliberately not materialised. The previous implementation
+            # wrote a full clique per episode -- every entity paired with every other, in
+            # both directions, at a fixed confidence -- which stored O(N^2) rows carrying
+            # no signal. library.entity_cooccurrence derives the same relationships from
+            # episode_entities at read time instead.
+            conn.execute("UPDATE episodes SET analysis_status='ready' WHERE id=?", (episode_id,))
+
+        if progress:
+            progress(0.83, "Index · entities stored")
 
         if generate_embeddings:
             if progress:
@@ -315,7 +312,6 @@ def analyze_episode(db: Database, episode_id: int, generate_embeddings: bool = T
                 progress=(lambda p, m: progress(0.84 + p * 0.13, m)) if progress else None,
             )
 
-        db.execute("UPDATE episodes SET analysis_status='ready' WHERE id=?", (episode_id,))
         if progress:
             progress(0.99, "AI analysis ready")
     except Exception:

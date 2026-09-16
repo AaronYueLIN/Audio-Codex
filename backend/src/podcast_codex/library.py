@@ -116,3 +116,51 @@ def collection_episodes(db: Database, collection_id: int) -> list[dict]:
            ORDER BY e.imported_at DESC""",
         (collection_id,),
     )
+
+
+def entity_cooccurrence(db: Database, entity_id: int, *, limit: int = 100) -> list[dict]:
+    """Entities sharing at least one episode with `entity_id`, most-shared first.
+
+    Computed on read. Analysis previously materialised a full clique of co-occurrence
+    rows per episode (every entity linked to every other, both directions, fixed
+    confidence), which carried no signal and grew quadratically. Deriving the pairs
+    here keeps the same relationships without the storage.
+    """
+    return db.all(
+        """WITH ee AS (SELECT DISTINCT episode_id, entity_id FROM episode_entities)
+           SELECT 'CO_OCCURS_IN_EPISODE' AS relation,
+                  en.id, en.type, en.canonical_name,
+                  COUNT(*) AS episode_count
+           FROM ee a
+           JOIN ee b ON b.episode_id = a.episode_id AND b.entity_id != a.entity_id
+           JOIN entities en ON en.id = b.entity_id
+           WHERE a.entity_id = ?
+           GROUP BY b.entity_id
+           ORDER BY episode_count DESC, en.canonical_name
+           LIMIT ?""",
+        (int(entity_id), max(1, min(500, int(limit)))),
+    )
+
+
+def entity_link_graph(db: Database, entity_ids: list[int], *, limit: int = 500) -> list[dict]:
+    """Co-occurrence links among `entity_ids`, weighted by shared episode count.
+
+    `b.entity_id > a.entity_id` keeps each pair single-sided, so callers no longer have
+    to filter out the mirrored row the way the stored-relation version required.
+    """
+    ids = sorted({int(x) for x in entity_ids})
+    if len(ids) < 2:
+        return []
+    placeholders = ",".join("?" for _ in ids)
+    return db.all(
+        f"""WITH ee AS (SELECT DISTINCT episode_id, entity_id FROM episode_entities)
+            SELECT a.entity_id AS source, b.entity_id AS target, COUNT(*) AS episode_count
+            FROM ee a
+            JOIN ee b ON b.episode_id = a.episode_id AND b.entity_id > a.entity_id
+            WHERE a.entity_id IN ({placeholders})
+              AND b.entity_id IN ({placeholders})
+            GROUP BY a.entity_id, b.entity_id
+            ORDER BY episode_count DESC, source, target
+            LIMIT ?""",
+        (*ids, *ids, max(1, min(5000, int(limit)))),
+    )

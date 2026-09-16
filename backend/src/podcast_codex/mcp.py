@@ -7,6 +7,7 @@ from typing import Any
 
 
 from .db import Database
+from .library import entity_cooccurrence
 from .search import hybrid_search, scope_episode_ids
 
 MCP_PROTOCOL_VERSION = "2025-06-18"
@@ -328,12 +329,7 @@ def entity_get(db: Database, entity_id: int) -> dict:
            WHERE ee.entity_id=? ORDER BY e.imported_at DESC, s.start_ms LIMIT 120""",
         (int(entity_id),),
     )
-    row["relations"] = db.all(
-        """SELECT r.relation, en.id, en.type, en.canonical_name
-           FROM entity_relations r JOIN entities en ON en.id=r.target_entity_id
-           WHERE r.source_entity_id=? ORDER BY r.relation, en.canonical_name LIMIT 100""",
-        (int(entity_id),),
-    )
+    row["relations"] = entity_cooccurrence(db, entity_id)
     return row
 
 
