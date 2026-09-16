@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+venv/
+.venv/
+
+# AudioCodex runtime/user data
+library.db
+library.db-*
+*.db
+*.db-wal
+*.db-shm
+cache/
+models/
+logs/
+user-data/
+runtime-data/
+
+# Credentials/local settings
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.pfx
+*.p12
+secrets.*
+credentials.*
+
+# Build outputs / binaries
+build/
+dist/
+out/
+installer/payload.zip
+AudioCodex.exe
+AudioCodex-R9.exe
+AudioCodexSetup*.exe
+*.msix
+*.msixbundle
+backend/windows/**/bin/
+backend/windows/**/obj/
+backend/windows/host/
+
+# Editors/OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs/crash dumps
+*.log
+*.dmp
+*.dump
+
+# Local tooling debug output
+.statamcp/

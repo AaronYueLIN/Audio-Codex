@@ -1,0 +1,483 @@
+{
+  "product": "AudioCodex",
+  "version": "1.2.1",
+  "build_id": "1.2.1-R12.1-AUDIO-INTELLIGENCE-WINDOWSAISPEECH1",
+  "source_installer_sha256": "3d5dfef6c7d9f3e4fbd26cbfd85ce17520777f5282c72e1e32e33f24c5a2e411",
+  "files": [
+    {
+      "path": ".editorconfig",
+      "size": 288,
+      "sha256": "5898b3b786099230fa11053d01c44f6e86216484b310e7e1e1c37941a4176485"
+    },
+    {
+      "path": ".env.example",
+      "size": 131,
+      "sha256": "e2ad145c3c8091284c233f6dcb4d28289735d8c46c4bc533560bd6282405ff65"
+    },
+    {
+      "path": ".gitattributes",
+      "size": 239,
+      "sha256": "aead3da89d73d150087f7de100f85e7c5009e987ddd84b831fef89f5bba0c613"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.md",
+      "size": 337,
+      "sha256": "00bf54c8509370c8f57d94a06a4db0bdcede05084c00166281ab7c6e5a0cd13b"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.md",
+      "size": 331,
+      "sha256": "63c52e6b518383da7ef110463fca30b11fcee5bb8b4129db7a5ddd058e33d8ee"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "size": 296,
+      "sha256": "9e31a233c98ef927beb7e1755ae4712494fc2df5f334b4e39bfa12883f2b3d5e"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "size": 410,
+      "sha256": "198990a425ad38717173656bfb1c5c2cc5356f1e73efba7787e3a4a21ab0f4d3"
+    },
+    {
+      "path": ".gitignore",
+      "size": 647,
+      "sha256": "2148514420803d7bc9fd2c0380c610e2b7864978e7ccb45de62f7af42136f545"
+    },
+    {
+      "path": "AppxManifest.xml",
+      "size": 1809,
+      "sha256": "74d6f40c9a40c1c60e839180f6083015b09c5779f01b0499c4e1235b6f12b08e"
+    },
+    {
+      "path": "Assets/Square150x150Logo.png",
+      "size": 656,
+      "sha256": "b6c500207cdc9bc118472904e2954eaba7010858d7db0ea3f8ac330eb0bf5234"
+    },
+    {
+      "path": "Assets/Square44x44Logo.png",
+      "size": 203,
+      "sha256": "a9e0f9668f123f7dd8a575308822ee50d5d44adcb30c379e751b2f5f815211ed"
+    },
+    {
+      "path": "Assets/StoreLogo.png",
+      "size": 227,
+      "sha256": "3b31220ff7c1c19fb7babe0c7c2e32f1f22757063c5891c86c719f7039dd9a7d"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "size": 937,
+      "sha256": "653f0415790b5a7a3d8cdc0fea1fe44662e6bf221632104514cbc59149c031e5"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size": 773,
+      "sha256": "c5d0bb953636e71adc46215527c9eda75e13a09df0bec4124f3e36b472e88aae"
+    },
+    {
+      "path": "Install-Optional-AI.bat",
+      "size": 145,
+      "sha256": "1d11bbf70bd8f09255dfcbe21ff5cd09e1d77ef1b660fc2138f5ee272d4cbe93"
+    },
+    {
+      "path": "Install-Optional-AI.ps1",
+      "size": 355,
+      "sha256": "087fe073ed4491fa4b90cf77e4ffcb9538a09ae9516f88811ed3ffab2a7b3f95"
+    },
+    {
+      "path": "LICENSE",
+      "size": 1081,
+      "sha256": "1aa819611fdbd4f3a959952dbddd1b0f2152f28a0941bcc2befb2a8897ac000f"
+    },
+    {
+      "path": "PRIVACY.md",
+      "size": 1356,
+      "sha256": "b9a2e86bb8988b1c43cc18b69d0d509dcb2f649d9713c2d6268b4f1bcc79d589"
+    },
+    {
+      "path": "README.md",
+      "size": 4363,
+      "sha256": "981b4363d068a9363c4da62a2249fd1a5bf9d246393a991508680936723dabef"
+    },
+    {
+      "path": "README.zh-CN.md",
+      "size": 2229,
+      "sha256": "73561f25d0d147359bbbeccad32d6fbda44fbfcb010a4a62bd98f0ecd9c6eaf4"
+    },
+    {
+      "path": "SANITIZATION.md",
+      "size": 817,
+      "sha256": "0c8ada42b1090379aa3cff1cfc04748f18c47397d12eedc19a6701bef1219b99"
+    },
+    {
+      "path": "SECURITY.md",
+      "size": 853,
+      "sha256": "759ed7bbe06979dc73e33c2e1c856405e307ffc7aea8a51fb6865382466ecaaf"
+    },
+    {
+      "path": "VERSION.txt",
+      "size": 202,
+      "sha256": "0f85d5e0aec309ec463144cfbada4d549bc5e1ecb73773b6f839bb8fd796c184"
+    },
+    {
+      "path": "backend/pyproject.toml",
+      "size": 597,
+      "sha256": "1e578621333880afbefbd4e424f51b8d0f3658f747282e810cce2a30ad80520f"
+    },
+    {
+      "path": "backend/src/podcast_codex/__init__.py",
+      "size": 22,
+      "sha256": "3259b81af99bffac90c7051bbf62ac73e0491572cf83d1f556dda257bc17ac0e"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/__init__.cpython-313.pyc",
+      "size": 203,
+      "sha256": "5a7d5ca4cb91dfe52508a55038e2122de490220b9b9731f76a3e97968d07c7b5"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/ai.cpython-313.pyc",
+      "size": 66368,
+      "sha256": "aca238676ebd13720c06ce7fd9b88c1e74523fd1227f27d163bc1f3f0c5263f7"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/analysis.cpython-313.pyc",
+      "size": 17170,
+      "sha256": "b9614a942cfc415e19c35558f9ce4765d9c20fe5196a6231571f3c41e97c6075"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/config.cpython-313.pyc",
+      "size": 2144,
+      "sha256": "0465b9c9b32d0c1546179292d59d48a4dca01f1f1a26ba4f31b60a2eec0b83ec"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/db.cpython-313.pyc",
+      "size": 9108,
+      "sha256": "648bede8af6e01fd2e204c4d9564fb57d303949dfe96f35607d3c0f5e8dad6c2"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/importer.cpython-313.pyc",
+      "size": 8031,
+      "sha256": "d668ac7688aae5053655ab6136be0c784eb22288b1ff72b1a18923bf19feb8f2"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/intelligence.cpython-313.pyc",
+      "size": 40041,
+      "sha256": "a9c45f9bac3617d85349efe945abf5372d760290ddfa132d9065e870136d7da2"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/jobs.cpython-313.pyc",
+      "size": 7829,
+      "sha256": "2564628bcc79fb874b2e5757fd89911570c100570859ca1daa4cdf4f8664247e"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/library.cpython-313.pyc",
+      "size": 5624,
+      "sha256": "85a537a75434ffbe31f442631348b8380a441e30916aad526f49f209a51aaa7b"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/mcp.cpython-313.pyc",
+      "size": 29945,
+      "sha256": "7a5c87074f68a34d149b0cad4c5a9003961f7a8df723ba1ee5ccea2644a23cb7"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/media.cpython-313.pyc",
+      "size": 21868,
+      "sha256": "01c9459ff12ca0e7936f5f84dacd052a37cce7beb1fbd0215d42439a0769e686"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/r12.cpython-313.pyc",
+      "size": 56185,
+      "sha256": "5ccf4de4dc35cb9ab84cc9e826bff7132c794a83ada14b1007c44a0cf947a63e"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/rag.cpython-313.pyc",
+      "size": 24202,
+      "sha256": "380c5876429e5ebc2ebad96e86a4200bf93f92cbf29f85682f3aca0b238a7ca7"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/schema.cpython-313.pyc",
+      "size": 11631,
+      "sha256": "f566cb7de3a3d5947eaed946da486f325f67758939a110822e2843cb3d14464b"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/search.cpython-313.pyc",
+      "size": 9182,
+      "sha256": "3f2af84b75ef685a9a363e409e826ad9d4018cb13085fd841ca3cf7e125e3493"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/server.cpython-313.pyc",
+      "size": 71940,
+      "sha256": "5acb260216ed1984b1725e5f0385853ba46ff3992ca0b3777877ec1eeb434243"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/streaming.cpython-313.pyc",
+      "size": 3217,
+      "sha256": "88c815d653ce745e3557ef6f47bae020b9aac456bd18bb955f7029ef53832d5f"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/transcription.cpython-313.pyc",
+      "size": 24363,
+      "sha256": "060c56e498173388b98ea184bedcd3fe9039c5e6605847c88a773f3a35832a57"
+    },
+    {
+      "path": "backend/src/podcast_codex/__pycache__/types.cpython-313.pyc",
+      "size": 10236,
+      "sha256": "80a1e38ba80e7dada5999efa8249aa0d67a9a55be4838400397d2c1c0bead61e"
+    },
+    {
+      "path": "backend/src/podcast_codex/ai.py",
+      "size": 62817,
+      "sha256": "ef75645f6eee3216afbe57eda4c818fda6c8426148d31eabf58bb365fffec5c6"
+    },
+    {
+      "path": "backend/src/podcast_codex/analysis.py",
+      "size": 14175,
+      "sha256": "6b7f6c6256b776083591eb06ae8b369412962a23f3fa40306c73cfd3ee0a32cd"
+    },
+    {
+      "path": "backend/src/podcast_codex/config.py",
+      "size": 1066,
+      "sha256": "30498b7fa7295d7f96537aa94274c9cf6f8bd4fb9312eeb87a23866cb52452b9"
+    },
+    {
+      "path": "backend/src/podcast_codex/db.py",
+      "size": 5523,
+      "sha256": "946eb40d72cc7077eedd6798df97d3e77d4cc9a062acbef8af1fc802d7673aac"
+    },
+    {
+      "path": "backend/src/podcast_codex/importer.py",
+      "size": 5498,
+      "sha256": "00b32745b7f29841dbf55c9fe0bd53aad5dde7fdc0c77c256aca17baf0ea82e8"
+    },
+    {
+      "path": "backend/src/podcast_codex/intelligence.py",
+      "size": 33820,
+      "sha256": "2ee57fbfe9c66bb023b29b348900fe55395a5272498ea0163b097aa1deefc74d"
+    },
+    {
+      "path": "backend/src/podcast_codex/jobs.py",
+      "size": 5084,
+      "sha256": "c617dd978a44ce80e7537399a30c0b0f5553106abe47ad1f891174927154d460"
+    },
+    {
+      "path": "backend/src/podcast_codex/library.py",
+      "size": 4402,
+      "sha256": "0a0c127f3a9c05e41345d939b3ee6a88b25df75b4a0c00c1e0f1bc3d0ba0d63d"
+    },
+    {
+      "path": "backend/src/podcast_codex/mcp.py",
+      "size": 25523,
+      "sha256": "ba0f9df2fb9caaea13f175e5236aa98fc9b179d6c82857e7743f09e3546990d2"
+    },
+    {
+      "path": "backend/src/podcast_codex/media.py",
+      "size": 15192,
+      "sha256": "313445d0e23c3c9c5af7b5ab98c8978f7c16d56ea65521b13003b278f6ac005f"
+    },
+    {
+      "path": "backend/src/podcast_codex/r12.py",
+      "size": 44736,
+      "sha256": "f4613d2d1c8e275459d6268dfb186d1bcbff665bd1af2c6c8230db26880df9da"
+    },
+    {
+      "path": "backend/src/podcast_codex/rag.py",
+      "size": 20421,
+      "sha256": "8f06da97dda4f8862778502f5973ff88a2e463f2461e09c6c0553f70ed4c4932"
+    },
+    {
+      "path": "backend/src/podcast_codex/schema.py",
+      "size": 11451,
+      "sha256": "876cf3ba622cddaed8282d9806c4f4c4fb7bbb66c1019daef660e756d3efedcc"
+    },
+    {
+      "path": "backend/src/podcast_codex/search.py",
+      "size": 6722,
+      "sha256": "6a1f65d5cf3ef571345e84866b54e2fdcd9897bd5612c65a2346ccaf8d7e2764"
+    },
+    {
+      "path": "backend/src/podcast_codex/server.py",
+      "size": 48666,
+      "sha256": "69561942375ac2813fbce18f7e3475c2d93ec1e256369267c4206f13254a55d3"
+    },
+    {
+      "path": "backend/src/podcast_codex/streaming.py",
+      "size": 1908,
+      "sha256": "b2d68860fc3b550ed33daa02e94b14ad9bbf118f0dd554f8a5b16e0993b1df12"
+    },
+    {
+      "path": "backend/src/podcast_codex/transcription.py",
+      "size": 18158,
+      "sha256": "e37100a779b5d3e5f8ac86f51c968488b4b1f74ce727e4916c20ff619f96c303"
+    },
+    {
+      "path": "backend/src/podcast_codex/types.py",
+      "size": 4662,
+      "sha256": "2ecb903f58b84f4f6c1a076b1e4b36d233e40f3152e7da2f42f707bd1f1948bd"
+    },
+    {
+      "path": "backend/ui/assets/mic-mark.png",
+      "size": 2347790,
+      "sha256": "1780008eeb0de7460b74f1cd05e73b854951d551a97ea7a0431cd0142f5b5d1f"
+    },
+    {
+      "path": "backend/ui/index.html",
+      "size": 133350,
+      "sha256": "5444d87c1f31ddbf649da404dda394ca20b3ec5e91856b772b1095094dbaf6b5"
+    },
+    {
+      "path": "backend/windows/AudioCodex.WindowsAISpeechHost/AudioCodex.WindowsAISpeechHost.csproj",
+      "size": 1075,
+      "sha256": "47ad9b54dfaf34664d8e2280048498b3997cceae33899cbad825b5a760d76ca8"
+    },
+    {
+      "path": "backend/windows/AudioCodex.WindowsAISpeechHost/Program.cs",
+      "size": 23159,
+      "sha256": "7c4bc1656ccee1225e50f93d95c77fc1e44855d7ddf12c06de773aaa49e2df4f"
+    },
+    {
+      "path": "backend/windows/AudioCodex.WindowsAISpeechHost/README.md",
+      "size": 1183,
+      "sha256": "b85887bd2deabd80ac60ff71da899c1ea8aa66287ddea9eaa0bd20bbd2974215"
+    },
+    {
+      "path": "backend/windows/Build-WindowsAISpeechHost.ps1",
+      "size": 985,
+      "sha256": "596168557bda51dfff609a155411b49ba0e4f135f6a643af4987a7d3e66921b7"
+    },
+    {
+      "path": "backend/windows/WindowsAIHostBridge.ps1",
+      "size": 1213,
+      "sha256": "d0272e3b007f7b5b9dc072cf9a310f47d422c4f1571f2c2ea45897773fbeb285"
+    },
+    {
+      "path": "backend/windows/WindowsAIInvoke.ps1",
+      "size": 1765,
+      "sha256": "4e1a6005e6fab9fcb6113a5ed2a3b5759c83660df956dd3e65f6528baccfe5df"
+    },
+    {
+      "path": "backend/windows/WindowsAISpeech.ps1",
+      "size": 6307,
+      "sha256": "a8de01eba050f9fab39a01aec7a9b27e6578f31dfe1f5ba0744d13e82b8f34ef"
+    },
+    {
+      "path": "backend/windows/WindowsSpeechStatus.ps1",
+      "size": 2023,
+      "sha256": "bd1bae6bdd3200d886818896429344a77a0b1ecd0ed4ee003c0cdbeafef36ddf"
+    },
+    {
+      "path": "backend/windows/WindowsSystemSpeech.ps1",
+      "size": 7059,
+      "sha256": "0a3a8c9ba617b139cccc2dfae78acad1e98a680334df6e5013086078714b011c"
+    },
+    {
+      "path": "docs/API-CONTRACT.md",
+      "size": 3005,
+      "sha256": "a5670fc2d9a7063a267f09b031c7b00ff611b0380378f8ccf4166b3ed2c89853"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "size": 1011,
+      "sha256": "a486ee840a81f393ba7a1b47d00b723718156ceb6bab23b59fa1787e137e8510"
+    },
+    {
+      "path": "docs/AUDIO-INTELLIGENCE-R12.md",
+      "size": 6369,
+      "sha256": "8057c46fe1dc9082d609469a33d69d7908b44cab66bfdc12b6f8a5665578ced1"
+    },
+    {
+      "path": "docs/BUILDING.md",
+      "size": 1115,
+      "sha256": "d2dbb6ad76019e74c12c6abfb04ac8d3b7a778c8576cfb139c49e5a14cc51856"
+    },
+    {
+      "path": "docs/PUBLISHING.md",
+      "size": 424,
+      "sha256": "e7ff83284c58c3b2ed57c341fad917e69098dff33c5c07453ebc021b1a3732d2"
+    },
+    {
+      "path": "docs/RECOVERY.md",
+      "size": 1384,
+      "sha256": "acea3e25ab9dd66f811573f01f4edddf11cc5ef199a6077dd330f044cbd7ce93"
+    },
+    {
+      "path": "docs/UI-PALETTE.md",
+      "size": 720,
+      "sha256": "0685cbf44eda2572c16ab88d3fd7f624ba72505ff8344f846e8d82bf1889ee6d"
+    },
+    {
+      "path": "docs/WINDOWS-AI-SPEECH-INTEGRATION.md",
+      "size": 2716,
+      "sha256": "81ee1709b491477b868690d0545801ae6b35fe184a645bff171b974d12caad69"
+    },
+    {
+      "path": "docs/history/AI-INTELLIGENCE-R11.md",
+      "size": 818,
+      "sha256": "c5df77fe2050d0ebc7b320c5cb0140549567525d37a09214f38af49bd912b744"
+    },
+    {
+      "path": "docs/history/ANALYSIS-FIX-NOTES.md",
+      "size": 874,
+      "sha256": "33fac94c0fc0910e520c29b1e990ae5bb299818e016ec4b10af9eeded802c703"
+    },
+    {
+      "path": "docs/history/DETAIL-POLISH-NOTES.md",
+      "size": 1324,
+      "sha256": "51b96765195d5164e1551dcea5e882d489b43072565c5e1a8d82b8610dd4b453"
+    },
+    {
+      "path": "docs/history/KNOWLEDGE-ANNOTATIONS-NOTES.md",
+      "size": 629,
+      "sha256": "90cdc5f33a8c9ec95b2d75877543c42a241819acb07bf7aadc25c8b0695f401b"
+    },
+    {
+      "path": "docs/history/R9-TRANSCRIPT-FIX1.md",
+      "size": 672,
+      "sha256": "ed89e36733d6193adf095e4beee84ab3751f97e6d97bfb987a9a8b526822a0cf"
+    },
+    {
+      "path": "docs/history/RELEASE-NOTES-1.1.md",
+      "size": 2033,
+      "sha256": "e04b5e578fe0b7d517f3e5e61b6a8dbb30fcb03d078887e0539b02a00e3ab9ce"
+    },
+    {
+      "path": "installer/README.md",
+      "size": 718,
+      "sha256": "f85cb594c88d0733d3b2a2294358a3d3c158806cf9f15bbc4d65616e3e2152f7"
+    },
+    {
+      "path": "installer/setup.go",
+      "size": 16794,
+      "sha256": "b65886853e41b98a81a462569decd7e25cf7c93adf5a8d23814a5256e1bb5375"
+    },
+    {
+      "path": "requirements-core.txt",
+      "size": 81,
+      "sha256": "6f5785ddea274effa5b1f01f8f337fa8d664b1a1141fd7e4971dece9ae844648"
+    },
+    {
+      "path": "requirements-transcription.txt",
+      "size": 23,
+      "sha256": "608de26771062491ba3692dbead469c1b9916ce45d5ae3871627fba8654693cc"
+    },
+    {
+      "path": "run-dev.bat",
+      "size": 387,
+      "sha256": "f5115827a1a76045bac2076512312be3fd433d22781a5fb8c5969b0e0e0d2f5f"
+    },
+    {
+      "path": "run-dev.ps1",
+      "size": 415,
+      "sha256": "9b0c4bd21db7c09542495c6277c93bb5302e7da2c8de37cadf5ea3741c03135d"
+    },
+    {
+      "path": "scripts/repo_check.py",
+      "size": 1558,
+      "sha256": "b67a313827c8cfa9af83d0a5970ce7b81ae4760f21ccfb622fbe0e38e92ac3fa"
+    },
+    {
+      "path": "tools/launcher-wrapper.go",
+      "size": 1654,
+      "sha256": "8a29d76112d2f4b43a51ea75a782865a4052ea568223461e90c23126b0ab6b7a"
+    }
+  ]
+}

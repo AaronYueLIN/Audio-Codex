@@ -1,0 +1,1 @@
+$ErrorActionPreference="Stop"\n$Root=$PSScriptRoot\n$Python=Join-Path $Root "venv\\Scripts\\python.exe"\nif(-not(Test-Path $Python)){throw 'Install or repair Audio Codex first.'}\n& $Python -m pip install "pyannote.audio>=3.3,<5"\nif($LASTEXITCODE -ne 0){exit $LASTEXITCODE}\nWrite-Host "Speaker diarization dependency installed." -ForegroundColor Green\n
