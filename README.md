@@ -110,9 +110,6 @@ docs/                         Architecture, R12 contract, build/recovery notes
 .github/                      CI and contribution templates
 ```
 
-## Public release
-
-Do **not** commit the Windows installer EXE into the source tree. Publish it as a GitHub **Release asset** instead. See [Publishing](docs/PUBLISHING.md).
 
 ## License
 
