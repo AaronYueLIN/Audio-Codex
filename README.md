@@ -1,5 +1,37 @@
 # AudioCodex
 
+
+<img width="2526" height="1270" alt="image" src="https://github.com/user-attachments/assets/7af7338d-2600-45c3-a691-7d69f57cdd5d" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 **AudioCodex** is a local-first Windows audio knowledge system that turns long-form audio into a searchable, source-aware personal knowledge library and adds an application-level Intelligence layer on top.
 
 This repository snapshot corresponds to **AudioCodex 1.2.1 / R12.1 Hotfix 1**.
