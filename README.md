@@ -1,5 +1,7 @@
 # AudioCodex
 
+<img width="2526" height="1270" alt="AudioCodex interface" src="https://github.com/user-attachments/assets/7af7338d-2600-45c3-a691-7d69f57cdd5d" />
+
 **Turn thousands of hours of audio into a library you can actually use.**
 
 The best ideas arrive in long form — a three-hour interview, a lecture series, a podcast you
